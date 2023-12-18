@@ -11,6 +11,11 @@ use Illuminate\Pagination\Paginator;
 
 class AlumnoController extends Controller
 {
+
+    public function select()
+    {
+        return view('select');
+    }
     public function index($conexion)
     {
         Paginator::defaultView('vendor.pagination.bootstrap-5');
@@ -26,15 +31,15 @@ class AlumnoController extends Controller
         $tempNombreCursos = new TempNombreCursos();
         $tempNombreCursos->setConnection('mysql_'.$conexion);
         $cursos = $tempNombreCursos->orderBy('NombreCurso', 'asc')->get();
-
         return view('busqueda', compact('alumnos', 'cursos', 'conexion'));
     }
 
     public function buscar($conexion, Request $request)
     {
         Paginator::defaultView('vendor.pagination.bootstrap-5');
-        AlumnosMoodle::setConnection('mysql_'.$conexion);
-        $query = AlumnosMoodle::query();
+        $alumnosMoodle = new AlumnosMoodle();
+        $alumnosMoodle->setConnection('mysql_'.$conexion);
+        $query = $alumnosMoodle->newQuery();
 
         // Filtrar por nombre, apellidos, DNI y email si se proporcionan
         if ($request->filled('nombre')) {
@@ -74,16 +79,20 @@ class AlumnoController extends Controller
         $sql = $query->toSql();
         // echo '<pre>'.$sql.'</pre>';
 
-        TempNombreCursos::setConnection('mysql_'.$conexion);
-        $cursos = TempNombreCursos::orderBy('NombreCurso', 'asc')->get();
+        $tempNombreCursos = new TempNombreCursos();
+        $tempNombreCursos->setConnection('mysql_'.$conexion);
+        $query = $tempNombreCursos->newQuery();
+        $query->orderBy('NombreCurso', 'asc');
+        $cursos = $query->get();
 
-        return view('busqueda', compact('alumnos', 'cursos'));
+        return view('busqueda', compact('alumnos', 'cursos', 'conexion'));
     }
 
     public function expediente($conexion, $idAlumnoMoodle)
     {
-        AlumnosMoodle::setConnection('mysql_'.$conexion);
-        $query = AlumnosMoodle::query();
+        $alumno = new AlumnosMoodle();
+        $alumno->setConnection('mysql_'.$conexion);
+        $query = $alumno->newQuery();
         $query->where('idMoodle', $idAlumnoMoodle);
         $sql = $query->toSql();
         // echo '<pre>'.$sql.'</pre>';
@@ -94,8 +103,10 @@ class AlumnoController extends Controller
         $alumno = $query->first();
         // echo '<pre>'; print_r($alumno); echo '</pre>';
 
-        CursosNotas::setConnection('mysql_'.$conexion);
-        $query = CursosNotas::where('idAlumnoMoodle', $idAlumnoMoodle);
+        $cursosNotas = new CursosNotas();
+        $cursosNotas->setConnection('mysql_'.$conexion);
+        $query = $cursosNotas->newQuery();
+        $query->where('idAlumnoMoodle', $idAlumnoMoodle);
         // $sql = $query->toSql();
         // echo '<pre>'.$sql.'</pre>';
 
@@ -104,12 +115,16 @@ class AlumnoController extends Controller
 
         $programas = $query->get();
         foreach ($programas as $key => $value) {
-            TempNombreCursos::setConnection('mysql_'.$conexion);
-            $curso = TempNombreCursos::where('idCursoMoodle', $value->idCursoMoodle)->first();
+            $tempNombreCursos = new TempNombreCursos();
+            $tempNombreCursos->setConnection('mysql_'.$conexion);
+            $query = $tempNombreCursos->newQuery();
+            $curso = $query->where('idCursoMoodle', $value->idCursoMoodle)->first();
             $programas[$key]->NombreCurso = $curso->NombreCurso;
 
-            Notas::setConnection('mysql_'.$conexion);
-            $query = Notas::join('tempnombreasignaturas', 'notas.idBloque', '=', 'tempnombreasignaturas.idBloque')
+            $notas = new Notas();
+            $notas->setConnection('mysql_'.$conexion);
+            $query = $notas->newQuery();
+            $query->join('tempnombreasignaturas', 'notas.idBloque', '=', 'tempnombreasignaturas.idBloque')
             ->join('cursosnotas', 'notas.idCurso', '=', 'cursosnotas.idCurso')
             ->where('notas.idCursoMoodle', $programas[$key]->idCursoMoodle)
             ->where('cursosnotas.idAlumnoMoodle', $alumno->idMoodle)

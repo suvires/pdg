@@ -2,7 +2,7 @@
 
 @section('content')
     <h2>Buscador de alumnos</h2>
-    <form action="{{ route('buscar', ['conexion' => $conexion]) }}" method="GET">
+    <form action="{{route('buscar', ['conexion' => $conexion])}}" method="GET">
         @csrf <!-- Token CSRF -->
         <div class="form-group">
             <label for="nombre">Nombre:</label>

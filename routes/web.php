@@ -14,5 +14,6 @@ use App\Http\Controllers\AlumnoController;
 |
 */
 Route::get('/{conexion}/expediente/{idAlumnoMoodle}', [AlumnoController::class, 'expediente'])->name('expediente');
-Route::get('/{conexion}(/busqueda', [AlumnoController::class, 'buscar'])->name('buscar');
-Route::get('/{conexion}', [AlumnoController::class, 'index']);
+Route::get('/{conexion}/busqueda', [AlumnoController::class, 'buscar'])->name('buscar');
+Route::get('/{conexion}', [AlumnoController::class, 'index'])->name('index');
+Route::get('/', [AlumnoController::class, 'select']);
