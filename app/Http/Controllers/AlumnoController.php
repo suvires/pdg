@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\AlumnosMoodle;
 use App\Models\TempNombreCursos;
+use App\Models\TempNombreAsignaturas;
 use App\Models\CursosNotas;
 use App\Models\Notas;
 use Illuminate\Pagination\Paginator;
@@ -120,7 +121,18 @@ class AlumnoController extends Controller
             $tempNombreCursos->setConnection('mysql_'.$conexion);
             $query = $tempNombreCursos->newQuery();
             $curso = $query->where('idCursoMoodle', $value->idCursoMoodle)->first();
-            $programas[$key]->NombreCurso = $curso->NombreCurso;
+
+            // $sql = $query->toSql();
+            // echo '<pre>'.$sql.'</pre>';
+
+            // $bindings = $query->getBindings();
+            // echo '<pre>'; print_r($bindings); echo '</pre>';
+
+            if ($curso) {
+                $programas[$key]->NombreCurso = $curso->NombreCurso;
+            } else {
+                $programas[$key]->NombreCurso = 'Examen de...';
+            }
 
             $notas = new Notas();
             $notas->setConnection('mysql_'.$conexion);
