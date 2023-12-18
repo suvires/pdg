@@ -14,7 +14,8 @@ class AlumnoController extends Controller
 
     public function select()
     {
-        return view('select');
+        $conexion = "";
+        return view('select', compact('conexion'));
     }
     public function index($conexion)
     {
@@ -139,6 +140,6 @@ class AlumnoController extends Controller
             $programas[$key]->asignaturas = $query->get();
         }
 
-        return view('expediente', compact('alumno', 'programas'));
+        return view('expediente', compact('alumno', 'programas', 'conexion'));
     }
 }

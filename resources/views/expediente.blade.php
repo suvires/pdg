@@ -83,6 +83,7 @@
                         </tr>
                     </tbody>
                 </table>
+                @if(count($programa->asignaturas))
                 <h4>Asignaturas</h4>
                 <table class="table">
                     <thead>
@@ -112,6 +113,9 @@
                         @endforeach
                     </tbody>
                 </table>
+                @else
+                    <p>No ha cursado ninguna asignatura.</p>
+                @endif
                 @if ($programa->Observaciones)
                     <h4>Observaciones</h4>
                     <p>{{ $programa->Observaciones }}</p>
