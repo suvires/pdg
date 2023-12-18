@@ -60,8 +60,8 @@
                 @foreach ($alumnos as $alumno)
                     <tr>
                         <td>
-                            @if($alumno->idMoodle)
-                                <a href="{{ route('expediente', ['conexion' => $conexion, 'idAlumnoMoodle' => $alumno->idMoodle]) }}">Ver expediente</a>
+                            @if($alumno->idAlumno)
+                                <a href="{{ route('expediente', ['conexion' => $conexion, 'idAlumno' => $alumno->idAlumno]) }}">Ver expediente</a>
                             @endif
                             </td>
                         <td>{{ $alumno->idAlumno }}</td>

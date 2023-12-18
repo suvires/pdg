@@ -23,7 +23,7 @@ class AlumnoController extends Controller
         $alumnosMoodle = new AlumnosMoodle();
         $alumnosMoodle->setConnection('mysql_'.$conexion);
         $query = $alumnosMoodle->newQuery();
-        $query->orderBy('idMoodle', 'desc');
+        $query->orderBy('idAlumno', 'desc');
         $sql = $query->toSql();
         // echo '<pre>'.$sql.'</pre>';
 
@@ -59,7 +59,7 @@ class AlumnoController extends Controller
         if ($request->filled('curso')) {
             $idCursoMoodle = $request->curso; // Obtenemos el idCursoMoodle del request
 
-            $query->join('cursosnotas', 'alumnosmoodle.idMoodle', '=', 'cursosnotas.idAlumnoMoodle')
+            $query->join('cursosnotas', 'alumnosmoodle.idAlumno', '=', 'cursosnotas.idAlumno')
                   ->where('cursosnotas.idCursoMoodle', $idCursoMoodle);
         }
 
@@ -89,12 +89,12 @@ class AlumnoController extends Controller
         return view('busqueda', compact('alumnos', 'cursos', 'conexion'));
     }
 
-    public function expediente($conexion, $idAlumnoMoodle)
+    public function expediente($conexion, $idAlumno)
     {
         $alumno = new AlumnosMoodle();
         $alumno->setConnection('mysql_'.$conexion);
         $query = $alumno->newQuery();
-        $query->where('idMoodle', $idAlumnoMoodle);
+        $query->where('idAlumno', $idAlumno);
         $sql = $query->toSql();
         // echo '<pre>'.$sql.'</pre>';
 
@@ -107,7 +107,7 @@ class AlumnoController extends Controller
         $cursosNotas = new CursosNotas();
         $cursosNotas->setConnection('mysql_'.$conexion);
         $query = $cursosNotas->newQuery();
-        $query->where('idAlumnoMoodle', $idAlumnoMoodle);
+        $query->where('idAlumno', $idAlumno);
         // $sql = $query->toSql();
         // echo '<pre>'.$sql.'</pre>';
 
@@ -128,7 +128,7 @@ class AlumnoController extends Controller
             $query->join('tempnombreasignaturas', 'notas.idBloque', '=', 'tempnombreasignaturas.idBloque')
             ->join('cursosnotas', 'notas.idCurso', '=', 'cursosnotas.idCurso')
             ->where('notas.idCursoMoodle', $programas[$key]->idCursoMoodle)
-            ->where('cursosnotas.idAlumnoMoodle', $alumno->idMoodle)
+            ->where('cursosnotas.idAlumno', $alumno->idAlumno)
             ->select('notas.*', 'tempnombreasignaturas.NombreAsignatura');
 
             // $sql = $query->toSql();
