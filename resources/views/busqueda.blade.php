@@ -21,6 +21,10 @@
             <input type="text" class="form-control" id="email" name="email" value="{{ request('email') }}">
         </div>
         <div class="form-group">
+            <label for="email">Teléfono:</label>
+            <input type="text" class="form-control" id="telefono" name="telefono" value="{{ request('telefono') }}">
+        </div>
+        <div class="form-group">
             <label for="curso">Curso:</label>
             <select class="form-control" id="curso" name="curso">
                 <option value="">Todos</option>

@@ -57,6 +57,10 @@ class AlumnoController extends Controller
             $query->where('Email', 'like', '%' . $request->email . '%');
         }
 
+        if ($request->filled('telefono')) {
+            $query->where('Telefono', 'like', '%' . $request->telefono . '%');
+        }
+
         if ($request->filled('curso')) {
             $idCursoMoodle = $request->curso; // Obtenemos el idCursoMoodle del request
 
